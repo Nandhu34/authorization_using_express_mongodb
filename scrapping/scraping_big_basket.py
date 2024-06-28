@@ -7,6 +7,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By 
 from bs4 import BeautifulSoup 
 import pymongo 
+from time import sleep 
 
 
 class scrape_e_commerce:
@@ -17,11 +18,19 @@ class scrape_e_commerce:
         self.driver= webdriver.Chrome(options= chromeoption)
 
         #mongodb initialization 
-        conn = pymongo.mongo_client(config.db_connection_link )
+        conn = pymongo.MongoClient(config.db_connection_link )
         db = conn [ config.db_name]
         coll = db [ config.collection_name]
 
-    def get_all_category
+    def get_all_category(self):
+        self.driver .get(config.url)
+        sleep(2)
+        self.driver.find_element(By.XPATH,config.filter_xpath).click()
+        sleep(1)
+        
+
 
 
 obj = scrape_e_commerce()
+obj.get_all_category()
+# href="/cl/fruits-vegetables/?nc=nb"

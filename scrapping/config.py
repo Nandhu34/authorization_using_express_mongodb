@@ -3,3 +3,6 @@ url = "https://www.bigbasket.com/pc/bakery-cakes-dairy/bakery-snacks/breadcrumbs
 db_connection_link = 'mongodb://localhost:27017'
 db_name = "scrapped_data"
 collection_name ="product_details"
+filter_xpath = "(//div[@class='relative h-full'])[4]"
+
+final_product_link_xpath ="(//ul[@class='jsx-1259984711 w-56 px-2.5 bg-white text-darkOnyx-800 rounded-r-xs'])[2]"
