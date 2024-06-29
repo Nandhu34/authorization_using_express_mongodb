@@ -23,7 +23,7 @@ class scrape_e_commerce:
         #mongodb initialization 
         conn = pymongo.MongoClient(config.db_connection_link )
         db = conn [ config.db_name]
-        coll = db [ config.collection_name]
+        coll = db [ config.product_details_collection]
         # variables to store 
         self.total_product_links =set()
 
@@ -65,7 +65,8 @@ class scrape_e_commerce:
     def get_product_collect_data(self,data ):
 
         for each_data in data :
-             pass 
+            pass 
+            
         
 
 
