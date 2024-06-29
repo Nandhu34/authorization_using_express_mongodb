@@ -6,3 +6,5 @@ collection_name ="product_details"
 filter_xpath = "(//div[@class='relative h-full'])[4]"
 
 final_product_link_xpath ="(//ul[@class='jsx-1259984711 w-56 px-2.5 bg-white text-darkOnyx-800 rounded-r-xs'])[2]"
+
+category_x_path = "//ul[@class='jsx-1259984711 w-56 px-2.5 bg-darkOnyx-800 text-silverSurfer-100 rounded-l-xs']//li[@class='jsx-1259984711']"
