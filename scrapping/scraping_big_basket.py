@@ -24,6 +24,8 @@ class scrape_e_commerce:
         conn = pymongo.MongoClient(config.db_connection_link )
         db = conn [ config.db_name]
         coll = db [ config.collection_name]
+        # variables to store 
+        self.total_product_links =set()
 
     def get_all_category(self):
         self.driver .get(config.url)
@@ -36,10 +38,28 @@ class scrape_e_commerce:
        
         for each_category in range(15,total_categorie_count*2):
             xpath_to_locate = '('+config.category_x_path +')['+str(each_category)+']'
-            print(xpath_to_locate)
+            # print(xpath_to_locate)
             self.hover.move_to_element(catogorie[each_category])
             self.hover.perform()
-            sleep(1)
+           
+            sub_catogorie = self.driver.find_elements(By.XPATH , config.xpath_for_sub_category)
+            for catog in sub_catogorie:
+                self.hover.move_to_element(catog)
+                self.hover.perform()
+                product_links = self.driver.find_elements(By.XPATH,config.xpath_for_product)
+                for product in product_links: 
+                    # self.hover.move_to_element(product )
+                    # self.hover.perform()
+                    # print(product )
+                    
+                    link = product.get_attribute('href')
+                    # print(link)
+                    self.total_product_links.add(link)
+
+                    sleep(1 )
+
+                
+
 
 
 
@@ -49,4 +69,5 @@ class scrape_e_commerce:
 
 obj = scrape_e_commerce()
 obj.get_all_category()
+print(obj.total_product_links)
 # href="/cl/fruits-vegetables/?nc=nb"
