@@ -1,0 +1,19 @@
+{
+  "name": "nandha_naturals",
+  "version": "1.0.0",
+  "description": "e commerce site ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "nandhakumar",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "nandha_naturals"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
