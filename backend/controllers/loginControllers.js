@@ -1,6 +1,10 @@
+const validateRegisterSchema = require('../requestValidation/loginValidation')
+
+
 async function  RegisterNewUser(req,res)
 {
     console.log(req.body)
+    const   validate = validateRegisterSchema.validateAsync(req.body)
     console.log("register user ")
 }
 
