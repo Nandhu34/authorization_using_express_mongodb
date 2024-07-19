@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const validator = require('validator')
+// const validator = require('validator')
 const registerSchema =new mongoose.Schema({
 
 
@@ -20,7 +20,7 @@ const registerSchema =new mongoose.Schema({
         type:String ,
         unique:true ,
         required:true ,
-        validate :[validator.isEmail, 'please enter an valid email address']
+        // validate :[validator.isEmail, 'please enter an valid email address']
     },
 
     password:{

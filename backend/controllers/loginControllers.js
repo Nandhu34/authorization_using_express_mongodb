@@ -1,11 +1,27 @@
 const validateRegisterSchema = require('../requestValidation/loginValidation')
+const registerModel =require('../models/loginModels')
 
-
-async function  RegisterNewUser(req,res)
+async function  RegisterNewUser(req,res,next)
 {
     console.log(req.body)
-    const   validate = validateRegisterSchema.validateAsync(req.body)
-    console.log("register user ")
+    try
+    {
+        const  registerValidatedResult =await  validateRegisterSchema.validateAsync(req.body)
+        console.log(" schema has been validated ")
+        const checkPresence = await registerModel.countDocuments({"email":req.body.email})
+        if(checkPresence === 0)
+            {
+                
+            }
+    }   
+    catch (err)
+    {
+        console.log(err)
+        next(err)
+    }
+
+   
+    
 }
 
 
