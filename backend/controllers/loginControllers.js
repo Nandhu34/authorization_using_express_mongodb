@@ -1,5 +1,6 @@
-function RegisterNewUser(req,res)
+async function  RegisterNewUser(req,res)
 {
+    console.log(req.body)
     console.log("register user ")
 }
 

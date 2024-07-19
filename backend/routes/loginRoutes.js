@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const {RegisterNewUser,loginUser,logoutUser,deleteAccount,updateUser,forgetPassword} = require('../controllers/loginControllers')
 
-router.post('/Register',RegisterNewUser)
+router.post('/register',RegisterNewUser)
 router.post('/login',loginUser)
 router.put('/logout',logoutUser)
 router.delete('/delete',deleteAccount)
