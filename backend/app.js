@@ -4,12 +4,14 @@ const path = require('path')
 const fs= require("fs")
 const configPath =`${__dirname}/config/config.env`
 const loginRoutes = require('./routes/loginRoutes')
+const productRoutes = require('./routes/productRoutes')
+const {verifyTokenUpdateToken}=require('./utils/auth')
 const connectMongo= require('./utils/mongoConnection')
 require('dotenv').config({path:configPath})
 app.use(express.json())
 connectMongo()
 app.use('/api/auth',loginRoutes)
-
+app.use('/api/products',verifyTokenUpdateToken,productRoutes)
 
 app.use((err,req,res,next)=>
 {

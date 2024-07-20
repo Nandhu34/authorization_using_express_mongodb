@@ -17,4 +17,15 @@ const validateRegisterSchema = joi.object({
   
 })
 
-module.exports = validateRegisterSchema
+
+const loginValidation = joi.object({
+    email:joi.string().email().min(5).max(40).required().external((value,helpers)=>{value.trim(); return value }),
+    password:joi.string().min(5).max(12).external((value,helpers)=>{value.trim(); })
+
+})
+
+const forgetPasswordValidation = joi.object({
+    accessToken :joi.string().required()
+})
+
+module.exports = {validateRegisterSchema, loginValidation,forgetPasswordValidation}
