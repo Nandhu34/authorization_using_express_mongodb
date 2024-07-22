@@ -1,6 +1,8 @@
 const {validateRegisterSchema,loginValidation} = require('../requestValidation/loginValidation')
 const registerModel =require('../models/loginModels')
 const {hashPassword,verifyPassword,generateAccessToken,generateRefreshToken,verifyTokenUpdateToken} = require('../utils/auth')
+const {sendMailForgetPassword} = require('../utils/mailSender')
+
 async function  RegisterNewUser(req,res,next)
 {
     console.log(req.body)
@@ -148,16 +150,28 @@ function updateUser(req,res)
     console.log(" update user  details ")
 }
 
-function forgetPassword(req,res)
+ async function forgetPassword(req,res)
 {
     console.log("forget password ")
     try 
     {
+        console.log("try ")
+        username = "nandhakumarselva2000@gmail.com"   // get from cookie  
+        console.log(username)
+        try
+        {
+            const  mailResponse =  await    sendMailForgetPassword(username)
+            res.status(200).json({"data":"link has send to yout mail check "})
+        }
+        catch(err)
+        {
+            res.status(200).json({"error":"error happened  ",err})
+        }
         
-
     }
-    catch
+    catch(err)
     {
+console.error(err)
 
     }
 }

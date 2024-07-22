@@ -102,9 +102,7 @@ async function verifyTokenUpdateToken(req,res,next)
 
     }
     catch (err)
-    {
-        
-        
+    {        
         if(err.message == 'jwt expired')
         {
             console.log("jwt expired ")
@@ -134,8 +132,6 @@ async function verifyTokenUpdateToken(req,res,next)
                     res.status(200).json({"data":"token has been expired an dnew one is updated in db kindly check it "})
                     
                 }
-
-
             }
             catch (err)
             {
