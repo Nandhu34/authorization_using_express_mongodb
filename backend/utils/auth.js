@@ -93,6 +93,11 @@ async function verifyTokenUpdateToken(req,res,next)
     console.log(" verifying token and update the access token ")
     try 
     {
+        if(! req.headers['authorization'])
+            {
+              return   res.status(200).json({"message":"no auth found "})
+
+            }
         // verify the accesstoken token 
         var  auth = req.headers['authorization']
         auth = auth.split(' ')[1]

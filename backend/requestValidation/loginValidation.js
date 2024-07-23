@@ -28,4 +28,13 @@ const forgetPasswordValidation = joi.object({
     accessToken :joi.string().required()
 })
 
-module.exports = {validateRegisterSchema, loginValidation,forgetPasswordValidation}
+
+const resetPasswordValidation= joi.object({
+      email:joi.string().email().min(5).max(40).required().external((value,helpers)=>{value.trim(); return value }),
+      resetToken:joi.string().required(),
+      newPassword:joi.string().required()
+
+    })
+
+
+module.exports = {validateRegisterSchema, loginValidation,forgetPasswordValidation,resetPasswordValidation}

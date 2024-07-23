@@ -25,20 +25,39 @@ const payload = {
   email:userEmail
 
 }
+// http://localhost:3000/reset/:hbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5hbmRoYWt1bWFyc2VsdmEyMDAwQGdtYWlsLmNvbSIsImlhdCI6MTcyMTY1NzA0MSwiZXhwIjoxNzIxNjU3MzQxfQ.Oh_kcvsJWgLu4brcYrmsQnXIK2yFBTqQ7x69HM-9e5c
 
-let resetToken =  jwt.sign(payload,process.env.SECRETEKEY,{expiresIn:'5m'})
+let resetToken =  jwt.sign(payload,process.env.SECRETEKEY,{expiresIn:'1d'})
 console.log(resetToken)
 
 const mailOptions = {
     from:process.env.user,
-    to:"nandhakumars@saptanglabs.com",
+    to:userEmail,
     subject:`Resent password for ${userEmail}`,
    
-    html:`<p>Here the link to reset your password  ${process.env.BASE_URL}/${resetToken}</p><br><center>Link Valid updo 30 min Only  </center>`
+    html:`<p>Here is the link to reset your password:</p>
+    <p>
+        <a href="${process.env.BASE_URL}/${resetToken}" style="
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            border: 1px solid #007bff;
+            font-weight: bold;
+        ">
+            Reset Password
+        </a>
+    </p>
+    <br>
+    <center>Link valid up to 30 minutes only</center>`
 }
 
 console.log(mailOptions)
-process.exit(1)
+
 
 await  transporter.sendMail(mailOptions).then((info)=>{
     console.log("Email sent",info.messageId)

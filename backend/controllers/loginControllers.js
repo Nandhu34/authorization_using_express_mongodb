@@ -1,4 +1,4 @@
-const {validateRegisterSchema,loginValidation} = require('../requestValidation/loginValidation')
+const {validateRegisterSchema,loginValidation,resetPasswordValidation} = require('../requestValidation/loginValidation')
 const registerModel =require('../models/loginModels')
 const {hashPassword,verifyPassword,generateAccessToken,generateRefreshToken,verifyTokenUpdateToken} = require('../utils/auth')
 const {sendMailForgetPassword} = require('../utils/mailSender')
@@ -176,6 +176,35 @@ console.error(err)
     }
 }
 
+async function resetPassword(req,res)
+{
+    console.log(req.headers.origin)
+  
+    console.log("reset password function ")
+    try 
+    {
+       await resetPasswordValidation.validateAsync(req.body)
+       const updateNewPasswordDb = await registerModel.updateOne({"email":req.body.email},{"$set":{"password":req.body.newPassword}})
+        console.log(updateNewPasswordDb)
+console.log(updateNewPasswordDb['modifiedCount'])
+       if (updateNewPasswordDb['modifiedCount'] === 1 )
+        {
+            console.log(" updated ")
+            res.status(200).json({"data":"password has been updated successfully "})
+        }
+        else
+        {
+            console.log(" not updated ")
+            res.status(200).json({"warning ":"password not updated try after some time "})
 
+        }
 
-module.exports = {RegisterNewUser,loginUser,logoutUser,deleteAccount,updateUser,forgetPassword}
+    }
+    catch(err)
+    {
+        console.log(err)
+
+    }
+}
+
+module.exports = {RegisterNewUser,loginUser,logoutUser,deleteAccount,updateUser,forgetPassword,resetPassword}

@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {RegisterNewUser,loginUser,logoutUser,deleteAccount,updateUser,forgetPassword} = require('../controllers/loginControllers')
+const {RegisterNewUser,loginUser,logoutUser,deleteAccount,updateUser,forgetPassword,resetPassword} = require('../controllers/loginControllers')
 const {verifyTokenUpdateToken}=require('../utils/auth')
 router.post('/register',RegisterNewUser)
 router.post('/login',loginUser)
@@ -9,7 +9,7 @@ router.put('/logout',verifyTokenUpdateToken,logoutUser)
 router.delete('/delete',verifyTokenUpdateToken,deleteAccount)
 router.put('/update',verifyTokenUpdateToken,updateUser)
 router.post('/forgetPassword',verifyTokenUpdateToken,forgetPassword)
-
+router.put('/resetPassword',verifyTokenUpdateToken,resetPassword)
 
 module.exports = router 
 
