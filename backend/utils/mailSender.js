@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
+const {expireToken} = require('./auth')
 // const path = require('path');
 // const configPath = path.join(__dirname, '..', 'config', 'config.env');
 // console.log(`Config Path: ${configPath}`);
@@ -67,7 +68,7 @@ await  transporter.sendMail(mailOptions).then((info)=>{
     throw error 
   })
 
-
+  expireToken
 
 }
 

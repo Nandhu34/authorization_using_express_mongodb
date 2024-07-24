@@ -11,45 +11,70 @@ const connectMongo= require('./utils/mongoConnection')
 require('dotenv').config({path:configPath})
 app.use(express.json())
 
-app.use(cors({
-    origin: (origin,callback)=>
+
+const corsOption=
+{
+
+    origin:(origin,callback)=>
         {
-            console.log(process.env.ORIGINS)
-            if(process.env.ORIGINS.includes(origin)|| !origin)
+            console.log(origin)
+            if(!origin)
                 {
-                    console.log(" port is including ")
+                    console.log(" origin not gound ")
+                    // callback(null,true)
+                    // return 
+                    callback(new Error ('Not allowed by cors policy '))
+                }
+       
+            if(process.env.ORIGINS.includes(origin)  )
+                {
+                    console.log("allowed origins ",process.env.ORIGINS)
+                    console.log("my origin",origin)
                     callback(null,true)
                 }
             else
             {
-                console.log(" error block ")
-                callback(new Error('Not Allowed by CORS '))
+                callback(new Error ('Not allowed by cors policy '))
             }
-
         },
-    methods: ['GET', 'POST', 'PUT','DELETE', 'OPTIONS'],
-    credentials: false 
-}));
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+}
+
+app.use(cors(corsOption))
+
+// aplly for all routes 
+// app.use(cors({
+//     corsOption
+// }));
 
 connectMongo()
 
+
+// app.use((req, res, next) => {
+//     const origin = req.headers.origin;
+//     console.log(origin)
+//     if (origin === ! undefined ) {
+//         return res.status(400).json({ error: 'CORS origin header is missing' });
+//     }
+//     next();
+// });
+
+
 app.options('*', (req, res) => {
     const origin = req.headers.origin
-    console.log(origin)
-    res.setHeader('Access-Control-Allow-Origin',origin); 
+    console.log("orifin ",origin)
+    console.log("content type ",req.headers['Content-Type'])
+    res.setHeader('Access-Control-Allow-Origin','*'); 
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    // res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     // res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.sendStatus(204); 
+
 });
 
-app.use((req, res, next) => {
-    const origin = req.headers.origin;
-    if (req.method !== 'OPTIONS' && !origin) {
-        return res.status(400).json({ error: 'CORS origin header is missing' });
-    }
-    next();
-});
+
 
 
 app.use('/api/auth',loginRoutes)

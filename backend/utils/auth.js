@@ -84,8 +84,19 @@ async function verifyPassword(originalPassword,hashedPassword)
 } 
 
 function decodeJwt(jwtToken)
-{
+{try
+    {
     return jwt.decode(jwtToken,{complete:true })
+    }
+    catch (err)
+    {
+        if(err.message == 'jwt expired')
+            {
+                console.log("jwt expired ")
+                return false 
+            }
+
+    }
 }
 
 async function verifyTokenUpdateToken(req,res,next)
@@ -162,6 +173,29 @@ async function verifyTokenUpdateToken(req,res,next)
 }
 
 
+function expireToken(token )
+{
+    console.log("expire token function ")
+    const  decodedToken = decodeJwt(token)
+    if (decodedToken === false)
+        {
+            console.log(" token aldredy expired ")
+            return token 
+        }
+        
+    const expiredPayload = { ... decodedToken ,exp:Math.floor(Date.now() / 1000) - 1 }
+    const expiredToken = jwt.sign(expiredPayload, process.env.SECRETEKEY);
+
+    console.log("Token has been expired");
+    
+    console.log( "token has been expired ")
+    // console.log(expiredPayload)
+    console.log("token",token)
+    console.log("exp",expiredToken)
+    return expiredToken;
+    
+
+}
 
 
-module.exports = {hashPassword,verifyPassword,generateAccessToken,generateRefreshToken,verifyTokenUpdateToken,decodeJwt}
+module.exports = {hashPassword,verifyPassword,generateAccessToken,generateRefreshToken,verifyTokenUpdateToken,decodeJwt,expireToken}

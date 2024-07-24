@@ -1,6 +1,6 @@
 const {validateRegisterSchema,loginValidation,resetPasswordValidation} = require('../requestValidation/loginValidation')
 const registerModel =require('../models/loginModels')
-const {hashPassword,verifyPassword,generateAccessToken,generateRefreshToken,verifyTokenUpdateToken} = require('../utils/auth')
+const {hashPassword,verifyPassword,generateAccessToken,generateRefreshToken,expireToken} = require('../utils/auth')
 const {sendMailForgetPassword} = require('../utils/mailSender')
 
 async function  RegisterNewUser(req,res,next)
@@ -178,9 +178,10 @@ console.error(err)
 
 async function resetPassword(req,res)
 {
-    console.log(req.headers.origin)
+   
   
     console.log("reset password function ")
+    console.log(req.headers.origin)
     try 
     {
        await resetPasswordValidation.validateAsync(req.body)
@@ -198,6 +199,7 @@ console.log(updateNewPasswordDb['modifiedCount'])
             res.status(200).json({"warning ":"password not updated try after some time "})
 
         }
+        expireToken(req.body.resetToken)
 
     }
     catch(err)
