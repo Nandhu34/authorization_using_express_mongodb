@@ -20,7 +20,7 @@ const corsOption=
             console.log(origin)
             if(!origin)
                 {
-                    console.log(" origin not gound ")
+                    console.log(" origin not found ")
                     // callback(null,true)
                     // return 
                     callback(new Error ('Not allowed by cors policy '))
@@ -62,17 +62,18 @@ connectMongo()
 // });
 
 
-app.options('*', (req, res) => {
-    const origin = req.headers.origin
-    console.log("orifin ",origin)
-    console.log("content type ",req.headers['Content-Type'])
-    res.setHeader('Access-Control-Allow-Origin','*'); 
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    // res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.sendStatus(204); 
+// app.options('*', (req, res) => {
+//     const origin = req.headers.origin
 
-});
+//     console.log("orifin ",origin)
+//     console.log("content type ",req.headers['Content-Type'])
+//     res.setHeader('Access-Control-Allow-Origin','*'); 
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//     // res.setHeader('Access-Control-Allow-Credentials', 'true');
+//     res.sendStatus(204); 
+
+// });
 
 
 

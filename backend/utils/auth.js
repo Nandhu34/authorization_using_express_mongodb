@@ -33,10 +33,9 @@ async function verifyPassword(originalPassword,hashedPassword)
          {
                 return true 
           }
-        else
-        {
+      
             return false 
-        }
+        
 
     }
     catch
@@ -52,7 +51,7 @@ async function verifyPassword(originalPassword,hashedPassword)
     console.log(" generating access token ")
     try 
     {
-        const payload={email:email,role:role}
+        const payload={email,role}
         const secreteKey = process.env.SECRETEKEY
         return  jwt.sign(payload,secreteKey,{expiresIn:process.env.ACCESS_TOKEN_EXPIRY})
 

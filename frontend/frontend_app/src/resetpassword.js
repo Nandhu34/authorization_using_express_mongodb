@@ -75,7 +75,7 @@ useEffect(()=>{
             // console.log("send mail")
             const myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
-            myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5hbmRoYWt1bWFyc2VsdmEyMDAwQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzIxNzM0ODg1LCJleHAiOjE3MjE4MjEyODV9.OqEYkBl1HCp_bpYvNgy67Tx5Ttrytce2IUuYdAJbSD0");
+            myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5hbmRoYWt1bWFyc2VsdmEyMDAwQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzIxODI4MjEwLCJleHAiOjE3MjE5MTQ2MTB9.OKlFBg-FlzZ3BWnEkGvMZRQHiIxK-dvOHSmXiIm2658");
         
             const raw = JSON.stringify({
                 "email": "nandhakumarselva2000@gmail.com",

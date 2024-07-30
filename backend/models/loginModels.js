@@ -53,7 +53,7 @@ const registerSchema =new mongoose.Schema({
         default:'user'
     },
     resetPasswordToken: String,
-    resetPasswordTokenExpire: Date
+    resetPasswordTokenExpire: Boolean
 
 
 })
