@@ -10,6 +10,7 @@ const {
   generateAccessToken,
   generateRefreshToken,
   expireToken,
+  decodeJwt
 } = require("../utils/auth");
 const { sendMailForgetPassword } = require("../utils/mailSender");
 
@@ -120,8 +121,47 @@ async function loginUser(req, res, next) {
   }
 }
 
-function logoutUser(req, res) {
+async function  logoutUser(req, res) {
   console.log(" logout user ");
+  try 
+  {
+    var  auth = req.headers['authorization']
+    auth = auth.split(' ')[1]
+    console.log(auth)
+    decodedValue = await decodeJwt(auth)
+    console.log("decoded value ",decodedValue)
+    if(decodedValue ===false)
+      {
+        res.status(400).json({"warning":"some error has been happened try after some time"})
+        return 
+      }
+    console.log(decodedValue)
+    emailFromToken = decodedValue.payload.email
+    roleFromToken = decodedValue.payload.role
+    checkUserExists =await  registerModel.findOne({"email":emailFromToken,"role":roleFromToken})
+    if(! checkUserExists)
+      {
+        res.status(400).json({"warning":"user details not found"})
+        return 
+      }
+      queryToUpdateToken = {"email":emailFromToken,"role":roleFromToken}
+      updateQuery= {$set:{"accessToken":""}}
+      console.log(queryToUpdateToken,"--",updateQuery)
+      updateToken = await registerModel.updateOne(queryToUpdateToken,updateQuery)
+   
+    if(updateToken)
+      {
+        res.status(200).json({"message":"user has been logout  successfully"})
+        return 
+      }
+    res.status(200).json({"message":"data  not been updated"})
+    return 
+  }
+  catch (err)
+  {
+    res.status(200).json({"error":err})
+    return 
+  }
 }
 
 function deleteAccount(req, res) {

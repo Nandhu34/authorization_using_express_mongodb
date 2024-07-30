@@ -23,7 +23,7 @@ const corsOption=
                     console.log(" origin not found ")
                     // callback(null,true)
                     // return 
-                    callback(new Error ('Not allowed by cors policy '))
+                    callback(new Error ('Not allowed by cors policy no origin '))
                 }
        
             if(process.env.ORIGINS.includes(origin)  )
@@ -89,7 +89,7 @@ app.use((err,req,res,next)=>
 })
 
 app.listen(process.env.PORT,()=>{
-    console.log("server is running ")
+    console.log("server is running  in port ", process.env.PORT)
    
 })
 

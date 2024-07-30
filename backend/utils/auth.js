@@ -111,6 +111,9 @@ async function verifyTokenUpdateToken(req,res,next)
         // verify the accesstoken token 
         var  auth = req.headers['authorization']
         auth = auth.split(' ')[1]
+        
+        console.log(auth,"---",req.headers['authorization'])
+        
         jwt.verify(auth, process.env.SECRETEKEY)
         next()
 
@@ -127,7 +130,7 @@ async function verifyTokenUpdateToken(req,res,next)
             const decodedJwtValue = decodeJwt( auth  )
             const role = decodedJwtValue.payload.role
             const email = decodedJwtValue.payload.email
-          
+            
             try 
             {
                 DataFromRegisteredUser  = await registerModel.findOne({"email":email})

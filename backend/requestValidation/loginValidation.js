@@ -13,7 +13,7 @@ const validateRegisterSchema = joi.object({
     dateOfLastLogin:joi.date().required(),
     role:joi.string().valid('user','admin').default('user').required(),
     resetPasswordToken:joi.string().allow(''),
-    resetPasswordTokenExpire:joi.string().allow('')
+    resetPasswordTokenExpire:joi.boolean().allow('')
   
 })
 
