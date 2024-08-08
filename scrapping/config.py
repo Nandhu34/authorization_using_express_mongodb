@@ -2,9 +2,13 @@ test_url="https://chennaiangadi.com/pl/miniature-toys/111"
 url = "https://www.bigbasket.com/pc/bakery-cakes-dairy/bakery-snacks/breadcrumbs-croutons/?nc=nb"
 db_connection_link = 'mongodb://localhost:27017'
 
-db_name = "nandha_naturals"
+db_name = "nandhaNaturals"
 
 product_details_collection = "product_details"
+
+main_link_collection ="main_links"
+
+specific_product_link = "specific_product_link"
 
 filter_xpath = "(//div[@class='relative h-full'])[4]"
 
