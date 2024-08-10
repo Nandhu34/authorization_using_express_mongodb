@@ -6,7 +6,7 @@ import config
 from selenium import webdriver
 from selenium.webdriver.common.by import By 
 from selenium.webdriver.common.action_chains import ActionChains
-
+import datetime
 from bs4 import BeautifulSoup 
 import pymongo 
 from time import sleep 
@@ -32,6 +32,7 @@ class scrape_e_commerce:
         self.total_main_link = db [config.main_link_collection]
         self.specific_link_collection = db [config.specific_product_link]
         self.final_specific_links = db [config.final_specific_links ]
+        self.product_details = db[config.product_details]
         
         # variables to store 
         self.total_product_links =set()
@@ -141,11 +142,13 @@ class scrape_e_commerce:
                         
     def collect_complete_data_from_link(self, specific_link_document):
         print(specific_link_document)
+        data ={}
         main_link = specific_link_document['main_link']
         product_link = specific_link_document['specific_prodict_links']
 
         full_product_link = 'https://bigbasket.com'+product_link
-        full_product_link = 'https://www.bigbasket.com/pd/10000273/fresho-mushrooms-button-1-pack/?nc=l2category&t_pos_sec=1&t_pos_item=2&t_s=Mushrooms+-+Button'
+        # full_product_link ='https://www.bigbasket.com/pd/10000273/fresho-mushrooms-button-1-pack/?nc=l2category&t_pos_sec=1&t_pos_item=2&t_s=Mushrooms+-+Button'
+        # full_product_link = 'https://www.bigbasket.com/pd/10000273/fresho-mushrooms-button-1-pack/?nc=l2category&t_pos_sec=1&t_pos_item=2&t_s=Mushrooms+-+Button'
         self.driver.get(full_product_link)
         soup = BeautifulSoup(self.driver.page_source,'html.parser')
 
@@ -157,105 +160,213 @@ class scrape_e_commerce:
 
         sub_sub_category = category_details[3]
 
-        basic_detais = {}
+        data ['category'] = main_category
+        data['sub_category']=sub_category
+        data['inner_category']= sub_sub_category
 
         print("main_cat:",main_category,"sub cat :",sub_category,"sub sub cat:",sub_sub_category)
 
         brand_name = soup.find(attrs={'class':'Description___StyledLink-sc-82a36a-1 gePjxR'}).text.strip()
+        data['brand_name']=brand_name
 
         print("brand name :", brand_name)
 
         title_name = soup.find(attrs={'class':'Description___StyledH-sc-82a36a-2 bofYPK'}).text.strip()
+        data['title_name']=title_name
         print("title name :",title_name)
+        try:
+            mrp_price_array  = soup.find(attrs={'class':'flex items-center mb-1 text-md text-darkOnyx-100 leading-md p-0'})
+        
 
-        mrp_price_array  = soup.find(attrs={'class':'flex items-center mb-1 text-md text-darkOnyx-100 leading-md p-0'})
+            mrp_price_array = mrp_price_array.find_all('td')[1].text.strip()
+            data['mrp_price']=mrp_price_array
+            print("mrp price :",mrp_price_array)
+        except Exception as e:
+            print(e)
+            data['mrp_price']=""
+        snapshot_list = soup.find(attrs={'class','thumbnail lg:h-94 xl:h-110.5 lg:w-17 xl:w-21'})
+        # print(snapshot_list)
+        image_links =[]
+        if snapshot_list:
+            img_tags = snapshot_list.find_all('img')
+            # for img in img_tags:
+            #     if 'src' in img.attrs:
+            #         print(img['src'])
+            #         sleep(3)
+            image_links = [img['src'] for img in img_tags if 'src' in img.attrs and img['src'].startswith('http')]
 
-
-        mrp_price_array = mrp_price_array.find_all('td')[1].text.strip()
-
-
-
-        print("mrp price :",mrp_price_array)
+        data ['image_links'] = image_links
         # print(mrp_price_array.td)
         # for mrp_price in mrp_price_array:
 
         #     print(mrp_price.text)
-
-        actual_price = soup.find(attrs={'class':'Description___StyledTd-sc-82a36a-4 fLZywG'}).text.replace('Price: ','')
-        print("actual price : ",actual_price)
+        data['link'] = self.driver.current_url
+        data['date_of_generation']= datetime.datetime.now()
+        try :
+            actual_price = soup.find(attrs={'class':'Description___StyledTd-sc-82a36a-4 fLZywG'}).text.replace('Price: ','')
+            data['actual_price']=actual_price
+            print("actual price : ",actual_price)
+            data['out_of_stock']=False
+        except :
+            data['actual_price']=""
+            data['out_of_stock']=True 
+            return self.update_data_in_db(data,product_link)
+             
 
         bracet_Content_near_mrp = soup.find(attrs={'class':'ml-1 text-darkOnyx-400 leading-md text-md p-0'}).text
+        data['bracet_near_mrp']=bracet_Content_near_mrp
 
         print("bracet in mrp :",bracet_Content_near_mrp)
+        try:
+            percentage_price_drop = soup.find(attrs={'class':'flex items-center text-md text-appleGreen-700 font-semibold mb-1 leading-md p-0'})
 
-        percentage_price_drop = soup.find(attrs={'class':'flex items-center text-md text-appleGreen-700 font-semibold mb-1 leading-md p-0'})
-
-        percentage_price_drop = percentage_price_drop.find_all('td')[1].text.strip()
-
-        print("percentage of price drop :",percentage_price_drop)
+            percentage_price_drop = percentage_price_drop.find_all('td')[1].text.strip()
+            data['price_drop'] = percentage_price_drop
+            print("percentage of price drop :",percentage_price_drop)
+        except :
+                data['price_drop'] = percentage_price_drop      
 
         description_title = soup.find(attrs={'class':'Brand___StyledH-sc-zi64kd-1 BNEST'}).text
-
+        data['description_title'] = description_title
         print("description title :",description_title)
 
-        description_product_details = soup.find_all(attrs={'class':'MoreDetails___StyledDiv-sc-1h9rbjh-0 dNIxde'})
-        detailed_product_details = {}
-        for each_details in description_product_details:
-            total_data = each_details.find_all('div')
-            title_for_each_title = total_data[0].text
-            # print(title_for_each_title)
-            description_for_each_title= total_data[2].text
-            # print(description_for_each_title)
-            # title_for_each_title = total_data.text
-            # description_for_each_title= total_data[1].title
-            if title_for_each_title not in  detailed_product_details.keys():
-                # print(title_for_each_title)
-                if title_for_each_title == 'Specification':
-                    splitted_data = description_for_each_title.split('\n')
-                    
-                    for each_split in splitted_data:
-                        if each_split != '':
-                            split_in_description = each_split.split(':')
-                            # print(len(split_in_description))
-                            # print(split_in_description)
-                            if len(split_in_description) ==1:
-                                temp_title = split_in_description[0].strip()
-                                # print(temp_title)
-                                detailed_product_details['Package_Content'].append( temp_title )
-                            if len(split_in_description) >= 2:
+        description_product_details = soup.find(attrs={'class':'MoreDetails___StyledSection-sc-1h9rbjh-4 bnsJyy'})
+        # print(description_product_details.text)
+        
+        title  = description_product_details.find_all(attrs={'class','Label-sc-15v1nk5-0 MoreDetails___StyledLabel-sc-1h9rbjh-2 gJxZPQ iNgmUl'})
+        description = description_product_details.find_all(attrs={'class','bullets pd-4 leading-xss text-md'})
+        extra_links = description_product_details.find(attrs={'class','Button-sc-1dr2sn8-0 MoreDetails___StyledButton2-sc-1h9rbjh-5 kYQsWi jFVeIl'})
+        print(" after description  ")
+        extra_links_present = bool(extra_links)  
+        try :
+            # print(soup)
+            try:
+                ele = soup.find(attrs={'class','para-1'})
+                print(ele.text)
+            except :
+                ele = ""
+            element = soup.find(attrs={'class', 'para-1 TemplateOne__ActivePara-sc-8p1tso-22 hlgARw'})
+            
+            print(element.text)
+            
+            extra_topic = ele.text+element.text
+        except Exception as e:
+            print(e)
+            extra_topic =""
 
-                                temp_title = split_in_description[0].strip()
-                                temp_value = split_in_description[1].strip()
+        print(" above extral ink ")
+        data['extra_links_present'] =extra_links_present
+        data['extra_topic'] = extra_topic
 
-                                detailed_product_details['Package_Content'] = []
 
-                                if temp_title == 'Package Content':
-                                    # Append the value and break the loop
-                                    detailed_product_details[temp_title.replace(' ','_').replace(',','_').replace('/','_')] = []
-                                    
-                                else:
-                                    # Add other specification details
-                                    if temp_title not in detailed_product_details.keys():
-                                        detailed_product_details[temp_title.replace(' ','_').replace(',','_').replace('/','_')] = temp_value
-                            else:
-                                # print(len(split_in_description))
-                                # print(split_in_description[0])
-                                pass 
-                else :
-                    detailed_product_details[title_for_each_title.replace(' ','_').replace(',','_').replace('/','_')] = description_for_each_title
-                    # print('----')
+        
+        for title,description in zip(title,description):
+            title_text = title.get_text(strip=True)
+            description_text = description.get_text(separator='\n', strip=True)
+            data[ title_text] = description_text
+        
+        return self.update_data_in_db(data,product_link)
+
+        
+        
+    def update_data_in_db(self,data,product_link):
+
+        ins = self.product_details.insert_one(data)
+        if ins.inserted_id:
+            print(ins.inserted_id)
+            # print(product_link)
+            query_to_update = {"specific_prodict_links":product_link}
+            update_query = {"$set":{"processed":True}}
+            print(query_to_update)
+            print(update_query)
+            print(query_to_update)
+            upd = self.final_specific_links.update_one(query_to_update,update_query )
+            print(upd.matched_count)
+            if upd.matched_count == 1:
+                print(" data updated ")
             else:
-                print(" else block - main ")
-                
-        other_product_info = {}
-        content_divs = soup.find_all('div', style="font-family: 'ProximaNova-Regular';font-size:13px;line-height: 18px;color:8f8f8f;")
-        desired_content_div = content_divs[2] 
-        key_value_details = {}
+                print(" not updated ")
+        return True 
 
-        for detail in desired_content_div.stripped_strings:
-            if ':' in detail:
-                key, value = detail.split(':', 1)
-                other_product_info[key.strip().replace(' ','_').replace(',','_').replace('/','_')] = value.strip()
+
+
+
+        
+
+        #         title_for_each_title = total_data[0].text
+        #         print(title_for_each_title)
+        #         description_for_each_title= total_data[1].text
+        #         print(description_for_each_title)
+        #         # title_for_each_title = total_data.text
+                # description_for_each_title= total_data[1].title
+
+
+        '''
+        try :
+            detailed_product_details = {}
+            for each_details in description_product_details:
+                total_data = each_details.find_all('div')
+                title_for_each_title = total_data[0].text
+                # print(title_for_each_title)
+                description_for_each_title= total_data[2].text
+                # print(description_for_each_title)
+                # title_for_each_title = total_data.text
+                # description_for_each_title= total_data[1].title
+                if title_for_each_title not in  detailed_product_details.keys():
+                    # print(title_for_each_title)
+                    if title_for_each_title == 'Specification':
+                        splitted_data = description_for_each_title.split('\n')
+                        
+                        for each_split in splitted_data:
+                            if each_split != '':
+                                split_in_description = each_split.split(':')
+                                # print(len(split_in_description))
+                                # print(split_in_description)
+                                if len(split_in_description) ==1:
+                                    temp_title = split_in_description[0].strip()
+                                    # print(temp_title)
+                                    detailed_product_details['Package_Content'].append( temp_title )
+                                if len(split_in_description) >= 2:
+
+                                    temp_title = split_in_description[0].strip()
+                                    temp_value = split_in_description[1].strip()
+
+                                    detailed_product_details['Package_Content'] = []
+
+                                    if temp_title == 'Package Content':
+                                        # Append the value and break the loop
+                                        detailed_product_details[temp_title.replace(' ','_').replace(',','_').replace('/','_')] = []
+                                        
+                                    else:
+                                        # Add other specification details
+                                        if temp_title not in detailed_product_details.keys():
+                                            detailed_product_details[temp_title.replace(' ','_').replace(',','_').replace('/','_')] = temp_value
+                                else:
+                                    # print(len(split_in_description))
+                                    # print(split_in_description[0])
+                                    pass 
+                    else :
+                        detailed_product_details[title_for_each_title.replace(' ','_').replace(',','_').replace('/','_')] = description_for_each_title
+                        # print('----')
+                else:
+                    print(" else block - main ")
+        except Exception as e:
+            detailed_product_details={}
+            print(e)
+        try :
+            other_product_info = {}
+            content_divs = soup.find_all('div', style="font-family: 'ProximaNova-Regular';font-size:13px;line-height: 18px;color:8f8f8f;")
+            desired_content_div = content_divs[2] 
+            key_value_details = {}
+
+            for detail in desired_content_div.stripped_strings:
+                if ':' in detail:
+                    key, value = detail.split(':', 1)
+                    other_product_info[key.strip().replace(' ','_').replace(',','_').replace('/','_')] = value.strip()
+        except Exception as e :
+            other_product_info={}
+            print(e)
+
 
 
         contact_details = {}
@@ -301,7 +412,7 @@ class scrape_e_commerce:
 
         print(detailed_product_details)
         print(other_product_info)
-        
+        '''
 
                 
 
@@ -350,7 +461,9 @@ load_specific_links = obj.final_specific_links.find({"processed":False})
 
 for each_link in load_specific_links:
        obj.collect_complete_data_from_link(each_link)
-       break 
+       
+
+       
 
 
 
