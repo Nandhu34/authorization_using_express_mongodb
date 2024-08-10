@@ -145,9 +145,162 @@ class scrape_e_commerce:
         product_link = specific_link_document['specific_prodict_links']
 
         full_product_link = 'https://bigbasket.com'+product_link
-
+        full_product_link = 'https://www.bigbasket.com/pd/10000273/fresho-mushrooms-button-1-pack/?nc=l2category&t_pos_sec=1&t_pos_item=2&t_s=Mushrooms+-+Button'
         self.driver.get(full_product_link)
         soup = BeautifulSoup(self.driver.page_source,'html.parser')
+
+        category_details = soup.find(attrs={'class': "Breadcrumb___StyledDiv-sc-1jdzjpl-0 hlQOJm"}).text.split('/')
+
+        main_category = category_details[1]
+
+        sub_category = category_details[2]
+
+        sub_sub_category = category_details[3]
+
+        basic_detais = {}
+
+        print("main_cat:",main_category,"sub cat :",sub_category,"sub sub cat:",sub_sub_category)
+
+        brand_name = soup.find(attrs={'class':'Description___StyledLink-sc-82a36a-1 gePjxR'}).text.strip()
+
+        print("brand name :", brand_name)
+
+        title_name = soup.find(attrs={'class':'Description___StyledH-sc-82a36a-2 bofYPK'}).text.strip()
+        print("title name :",title_name)
+
+        mrp_price_array  = soup.find(attrs={'class':'flex items-center mb-1 text-md text-darkOnyx-100 leading-md p-0'})
+
+
+        mrp_price_array = mrp_price_array.find_all('td')[1].text.strip()
+
+
+
+        print("mrp price :",mrp_price_array)
+        # print(mrp_price_array.td)
+        # for mrp_price in mrp_price_array:
+
+        #     print(mrp_price.text)
+
+        actual_price = soup.find(attrs={'class':'Description___StyledTd-sc-82a36a-4 fLZywG'}).text.replace('Price: ','')
+        print("actual price : ",actual_price)
+
+        bracet_Content_near_mrp = soup.find(attrs={'class':'ml-1 text-darkOnyx-400 leading-md text-md p-0'}).text
+
+        print("bracet in mrp :",bracet_Content_near_mrp)
+
+        percentage_price_drop = soup.find(attrs={'class':'flex items-center text-md text-appleGreen-700 font-semibold mb-1 leading-md p-0'})
+
+        percentage_price_drop = percentage_price_drop.find_all('td')[1].text.strip()
+
+        print("percentage of price drop :",percentage_price_drop)
+
+        description_title = soup.find(attrs={'class':'Brand___StyledH-sc-zi64kd-1 BNEST'}).text
+
+        print("description title :",description_title)
+
+        description_product_details = soup.find_all(attrs={'class':'MoreDetails___StyledDiv-sc-1h9rbjh-0 dNIxde'})
+        detailed_product_details = {}
+        for each_details in description_product_details:
+            total_data = each_details.find_all('div')
+            title_for_each_title = total_data[0].text
+            # print(title_for_each_title)
+            description_for_each_title= total_data[2].text
+            # print(description_for_each_title)
+            # title_for_each_title = total_data.text
+            # description_for_each_title= total_data[1].title
+            if title_for_each_title not in  detailed_product_details.keys():
+                # print(title_for_each_title)
+                if title_for_each_title == 'Specification':
+                    splitted_data = description_for_each_title.split('\n')
+                    
+                    for each_split in splitted_data:
+                        if each_split != '':
+                            split_in_description = each_split.split(':')
+                            # print(len(split_in_description))
+                            # print(split_in_description)
+                            if len(split_in_description) ==1:
+                                temp_title = split_in_description[0].strip()
+                                # print(temp_title)
+                                detailed_product_details['Package_Content'].append( temp_title )
+                            if len(split_in_description) >= 2:
+
+                                temp_title = split_in_description[0].strip()
+                                temp_value = split_in_description[1].strip()
+
+                                detailed_product_details['Package_Content'] = []
+
+                                if temp_title == 'Package Content':
+                                    # Append the value and break the loop
+                                    detailed_product_details[temp_title.replace(' ','_').replace(',','_').replace('/','_')] = []
+                                    
+                                else:
+                                    # Add other specification details
+                                    if temp_title not in detailed_product_details.keys():
+                                        detailed_product_details[temp_title.replace(' ','_').replace(',','_').replace('/','_')] = temp_value
+                            else:
+                                # print(len(split_in_description))
+                                # print(split_in_description[0])
+                                pass 
+                else :
+                    detailed_product_details[title_for_each_title.replace(' ','_').replace(',','_').replace('/','_')] = description_for_each_title
+                    # print('----')
+            else:
+                print(" else block - main ")
+                
+        other_product_info = {}
+        content_divs = soup.find_all('div', style="font-family: 'ProximaNova-Regular';font-size:13px;line-height: 18px;color:8f8f8f;")
+        desired_content_div = content_divs[2] 
+        key_value_details = {}
+
+        for detail in desired_content_div.stripped_strings:
+            if ':' in detail:
+                key, value = detail.split(':', 1)
+                other_product_info[key.strip().replace(' ','_').replace(',','_').replace('/','_')] = value.strip()
+
+
+        contact_details = {}
+
+        parts = other_product_info['For_Queries_Feedback_Complaints__Contact_our_Customer_Care_Executive_at'].split('|')
+        # Loop through each part to extract the key and value
+        # print(parts[1] )
+        for part in parts:
+            # print(part)
+
+            key_value = part.split(':',1)  # Split on the first colon only
+            # print(key_value)
+            if len(key_value) == 2:
+                key = key_value[0].strip()
+                # print(key)
+                
+
+
+                if key == 'Address':
+                    
+                    value = key_value[1].split('Email')[0]
+                    contact_details[key] = value
+                    email_data = key_value[1].split('Email')[1].split(':')
+                    # print(email_data)
+                    email_value = email_data[1]
+                    contact_details['Email']= email_value
+                
+
+                else:
+
+                    value = key_value[1].strip()
+
+                    contact_details[key] = value
+        # print(contact_details)
+
+        # Update the main object
+        # other_product_info = {}
+        other_product_info['For_Queries_Feedback_Complaints__Contact_our_Customer_Care_Executive_at'] = contact_details
+
+        # for key, value in key_value_details.items():
+        #     print(f'{key}: {value}')
+
+
+        print(detailed_product_details)
+        print(other_product_info)
         
 
                 
