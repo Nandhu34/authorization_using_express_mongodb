@@ -10,6 +10,8 @@ main_link_collection ="main_links"
 
 specific_product_link = "specific_product_link"
 
+final_specific_links= "duplicate_specific_product_links"
+
 filter_xpath = "(//div[@class='relative h-full'])[4]"
 
 final_product_link_xpath ="(//ul[@class='jsx-1259984711 w-56 px-2.5 bg-white text-darkOnyx-800 rounded-r-xs'])[2]"

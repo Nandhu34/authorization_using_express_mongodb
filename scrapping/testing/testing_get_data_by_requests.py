@@ -34,3 +34,10 @@ if response.status_code == 200:
 else:
     print(f"Request failed with status code {response.status_code}")
     print(response.text)
+
+
+
+
+
+
+    # /pd/40280785/bodyguard-baby-bathing-bar-gently-cleanses-moisturises-no-parabens-75-g/?nc=l3category&t_pos_sec=1&t_pos_item=6&t_s=Moisturizing%2520Baby%2520Bathing%2520Soap%2520Bar%2520for%2520Kids%2520%25E2%2580%2593%2520Pack%2520of%25202%252C%252075gms%2520each%2520%257C%2520pH%25205.5%252C%2520with%2520Oatmeal%2520Powder%252C%2520Shea%2520Butter%252C%2520Aloe%2520Vera%2520%2526%2520Calendula%2520Oil%2520%257C%2520Allergen%2520Free%2520%257C%2520Dermatologically%2520Tested
