@@ -147,29 +147,41 @@ class scrape_e_commerce:
         product_link = specific_link_document['specific_prodict_links']
 
         full_product_link = 'https://bigbasket.com'+product_link
+        print(full_product_link)
         # full_product_link ='https://www.bigbasket.com/pd/10000273/fresho-mushrooms-button-1-pack/?nc=l2category&t_pos_sec=1&t_pos_item=2&t_s=Mushrooms+-+Button'
         # full_product_link = 'https://www.bigbasket.com/pd/10000273/fresho-mushrooms-button-1-pack/?nc=l2category&t_pos_sec=1&t_pos_item=2&t_s=Mushrooms+-+Button'
         self.driver.get(full_product_link)
+        sleep(4)
         soup = BeautifulSoup(self.driver.page_source,'html.parser')
-
-        category_details = soup.find(attrs={'class': "Breadcrumb___StyledDiv-sc-1jdzjpl-0 hlQOJm"}).text.split('/')
-
-        main_category = category_details[1]
-
-        sub_category = category_details[2]
-
-        sub_sub_category = category_details[3]
+        try :
+            category_details = soup.find(attrs={'class': "Breadcrumb___StyledDiv-sc-1jdzjpl-0 hlQOJm"}).text.split('/')
+        except:
+            category_details =""
+        try:
+            main_category = category_details[1]
+        except :
+            main_category=""
+        try :
+         sub_category = category_details[2]
+        except :
+            sub_category= ""
+        try :
+            sub_sub_category = category_details[3]
+        except :
+            sub_sub_category=""
 
         data ['category'] = main_category
         data['sub_category']=sub_category
         data['inner_category']= sub_sub_category
 
         print("main_cat:",main_category,"sub cat :",sub_category,"sub sub cat:",sub_sub_category)
+        try :
+            brand_name = soup.find(attrs={'class':'Description___StyledLink-sc-82a36a-1 gePjxR'}).text.strip()
+            data['brand_name']=brand_name
 
-        brand_name = soup.find(attrs={'class':'Description___StyledLink-sc-82a36a-1 gePjxR'}).text.strip()
-        data['brand_name']=brand_name
-
-        print("brand name :", brand_name)
+            print("brand name :", brand_name)
+        except :
+            brand_name =""
 
         title_name = soup.find(attrs={'class':'Description___StyledH-sc-82a36a-2 bofYPK'}).text.strip()
         data['title_name']=title_name
@@ -212,11 +224,14 @@ class scrape_e_commerce:
             data['out_of_stock']=True 
             return self.update_data_in_db(data,product_link)
              
+        try :
+            bracet_Content_near_mrp = soup.find(attrs={'class':'ml-1 text-darkOnyx-400 leading-md text-md p-0'}).text
+            data['bracet_near_mrp']=bracet_Content_near_mrp
 
-        bracet_Content_near_mrp = soup.find(attrs={'class':'ml-1 text-darkOnyx-400 leading-md text-md p-0'}).text
-        data['bracet_near_mrp']=bracet_Content_near_mrp
+            print("bracet in mrp :",bracet_Content_near_mrp)
+        except :
+            data['bracet_near_mrp']=""
 
-        print("bracet in mrp :",bracet_Content_near_mrp)
         try:
             percentage_price_drop = soup.find(attrs={'class':'flex items-center text-md text-appleGreen-700 font-semibold mb-1 leading-md p-0'})
 
