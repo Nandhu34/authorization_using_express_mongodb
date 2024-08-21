@@ -31,6 +31,7 @@ const forgetPAssword = () => {
         <div className="maindiv">
 
             <button className="resetpassword" onClick={Sendemail}> Forget password </button>
+      
         </div>
 
 
