@@ -1,16 +1,12 @@
 // App.js
 import React from 'react';
-
+import LogIn from './components/loginRegister/loginComponent'
 
 import InputBox  from './uniqueComponents/inputBox';
 function App() {
-    return (
-        <div>
-
-            <InputBox placeholder="enter the username" class />
-          
-        </div>
-    );
+  <div>
+       <LogIn />
+  </div>
 }
 
 export default App;
