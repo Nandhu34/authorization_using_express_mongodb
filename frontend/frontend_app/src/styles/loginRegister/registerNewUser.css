@@ -1,0 +1,36 @@
+
+
+.register-main-div
+{
+        display: flex;
+        justify-content: space-evenly;
+        height: 100vh;
+        position: relative;
+}
+
+.inner-box-of-side-login-content
+{
+        text-align: center;
+        padding: 20px;
+
+        
+}
+.side-login-content 
+{
+        border: solid;
+        
+}
+
+.inner-box-of-side-login-content>div 
+{      
+      padding-top: 20px;
+}
+input[type =text],input[type=password],input[type=submit]
+{
+        
+        padding: 10px;
+        
+}
+
+
+
