@@ -7,19 +7,17 @@ import  styles from '../../styles/loginRegister/registerNewUser.css'
 
 
 function  LogIn() {
+    console.log(" login ")
    const [userName,setuseName] = useState('')
    const [password,setPassword] = useState('')
 
 return (
   <>
-  <p>{userName}</p>
-  <p> {password}</p>
- <p> kjknvnvnv</p>
   <div className="register-main-div">
 
       <div className="side-image-content">
-
-          <img className="side-image" src={login_images} alt="no image to display "/>
+            
+          {/* <img className="side-image" src={login_images} alt="no image to display "/> */}
         
       </div>
 

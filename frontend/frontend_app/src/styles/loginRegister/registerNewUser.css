@@ -4,20 +4,22 @@
 {
         display: flex;
         justify-content: space-evenly;
-        height: 100vh;
-        position: relative;
+        
 }
 
+.side-login-content
+{
+                
+}
 .inner-box-of-side-login-content
 {
         text-align: center;
         padding: 20px;
-
-        
-}
-.side-login-content 
-{
-        border: solid;
+        margin-top: 120%;
+        /* padding-top: 140%; */
+        border-width: 1px; 
+        border-style: solid; 
+        border-color: black;
         
 }
 
@@ -32,5 +34,9 @@ input[type =text],input[type=password],input[type=submit]
         
 }
 
+.side-image-content
+{
+        background-color:aqua
+}
 
 
