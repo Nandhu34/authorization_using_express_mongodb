@@ -5,12 +5,8 @@
         display: flex;
         justify-content: space-evenly;
         
-}
+} 
 
-.side-login-content
-{
-                
-}
 .inner-box-of-side-login-content
 {
         text-align: center;
@@ -23,6 +19,8 @@
         border-radius: 10px;
         
 }
+
+
 
 .inner-box-of-side-login-content>div 
 {      
@@ -41,3 +39,6 @@ input[type =text],input[type=password],input[type=submit]
 }
 
 
+.error-message{
+        color: red;
+}

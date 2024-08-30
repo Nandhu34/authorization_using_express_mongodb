@@ -13,18 +13,15 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-    {/* <BrowserRouter>
-      <Routes>
-      <Route path ="/sign-up"  element= {<Register/>}/>
-      <Route path ="/logout"  element= {<Logout/>}/>
-      </Routes>
+    <BrowserRouter>
+     
     
-    
+    <App />
     
     </BrowserRouter>
-   */}
-   {/* <App /> */}
-   <LogIn />
+  
+   
+   {/* <LogIn /> */}
     
   </React.StrictMode>
 );

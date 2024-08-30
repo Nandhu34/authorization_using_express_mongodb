@@ -84,6 +84,7 @@ function LogIn() {
                                 value="submit"
                                 onClick={handleClick}
                             />
+                            { <p> Cannot have Account ?  <a href = "" >sign-up !</a></p>}
                         </div>
                     </div>
                 </div>
