@@ -26,7 +26,7 @@
 {      
       padding-top: 20px;
 }
-input[type =text],input[type=password],input[type=submit]
+input[type =text],input[type=password],input[type=submit],input[type=number]
 {
         
         padding: 10px;
@@ -41,4 +41,18 @@ input[type =text],input[type=password],input[type=submit]
 
 .error-message{
         color: red;
+}
+
+
+.main-div-register
+{
+        display: flex;
+       
+}
+
+
+.main-div-register>div>input
+
+{
+        padding: 20px;
 }
