@@ -44,15 +44,26 @@ input[type =text],input[type=password],input[type=submit],input[type=number]
 }
 
 
-.main-div-register
-{
+.main-div-register {
+        background-color:grey
+        ;
         display: flex;
-       
-}
-
-
-.main-div-register>div>input
-
-{
-        padding: 20px;
-}
+        justify-content: center;  /* Center horizontally */
+        align-items: center;      /* Center vertically */
+        height: 100vh;            /* Full viewport height */
+    }
+    
+    .username-div {
+        display: flex;
+        flex-direction: column;   /* Stack inputs vertically */
+        gap: 10px;                /* Space between inputs */
+        border-style: ridge;
+        background-color: rgb(170, 156, 184);
+        padding: 4%;
+        border-radius: 25px;
+    }
+    
+    .username-div > div {
+        margin-bottom: 10px;      /* Adjusted margin to fit better */
+        padding: 10px;            /* Padding around input containers */
+    }

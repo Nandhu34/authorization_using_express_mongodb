@@ -10,6 +10,7 @@ function App() {
   <Routes>
       <Route path ="/signup"  element= {<RegidterNewUser/>}/>
       <Route path ="/login"  element= {<LogIn />}/>
+      <Route path ="/"  element= {<LogIn />}/>
     </Routes>
  </>
  )
