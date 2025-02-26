@@ -20,6 +20,7 @@ function RegidterNewUser()
 
     return (
         <>
+        
             <div className="main-div-register">
                 <div className="username-div">
                     <center>
